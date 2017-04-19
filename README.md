@@ -193,7 +193,7 @@ DNSSEC. If you are not implementing DNSSEC for the zone with your mail servers,
 then use traditional commercial Certificate Authorities with the exception of
 your MX server (where you can use self-signed even without DNSSEC/DANE
 suppport because other SMTP servers should not attempt to validate due to the
-flawed opportunistic nature of TLS for SMTP to SMTP communicatio over TCP Port
+flawed opportunistic nature of TLS for SMTP to SMTP communication over TCP Port
 25).
 
 For a secure e-mail system, it needs to be your priority to implement DNSSEC on
