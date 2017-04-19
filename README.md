@@ -181,7 +181,7 @@ This project has several shell scripts intended to run on UNIX variants for
 generating X.509 certificates for use with e-mail systems.
 
 The shell script for the MX server certificate creates a self-signed
-certificate and assumes a directory structure of `/etc/pki/tls/{private,certs}
+certificate and assumes a directory structure of `/etc/pki/tls/{private,certs}`
 for the private key and the public X.509 certificate.
 
 The other scripts will create a Certificate Authority structure within the
