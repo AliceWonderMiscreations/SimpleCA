@@ -98,3 +98,51 @@ Even though the shell script creates a X.509 TLS certificate that is valid for
 three years, I recommend you generate a fresh private key and X.509 certificate
 about once a year. When you do use DNSSEC with DANE, this needs to be carefully
 done or there could be a temporary loss of service.
+
+First use this script to create the new private key and public X.509
+certificate. Create a new TLSA record for TCP Port 25 containing the new
+fingerprint, but leave the old TLSA record in place. For a time, you will be
+serving two TLSA records with DANE fingerprints.
+
+Once at least twice the TTL you use for the TLSA record has passed, then you
+may put the new private key / public X.509 certificate into service.
+
+Personally however I recommend waiting for twice the TTL plus a calendar week.
+Waiting for an additional week gives plenty of time for caching recursive
+resolvers that do not precisely follow the rules to properly update their
+cached values for the TLSA records. It is then safe to switch your SMTP server
+software to start using the new private key and public X.509 TLS certificate.
+
+Once your SMTP server software has been updated to use the new private key and
+X.509 certificate, you can immediately remove the old TLSA record that has the
+old fingerprint. The old private / public key has now been taken out of
+service.
+
+### Encryption Note
+
+A private / public key pair on an SMTP server does *not* provide end to end
+encryption, it only provides for hop to hop encryption and then only for the
+hop going from the SMTP server sending the message to your MX server and then
+only *sometimes*.
+
+If your MX server is not protected by DNSSEC plus DANE according to RFC 7672
+then it is possible for malicious third party actors to force the connection to
+downgrade to plain text.
+
+If the SMTP server sending a message to your MX server does not enforce RFC
+7672 then it is possible for a malicious third party actor to force the
+connection to downgrade to plain text.
+
+When your users need to communicate through e-mail with the expectation of end-
+to-end encryption, your users should use either S/MIME or OpenPGP to achieve
+that goal.
+
+### OCSP Note
+
+The self-signed certificate produced by the shell script here does not support
+any time of certificate revokation.
+
+SMTP servers do not usually check for certificate revocation.
+
+If the private key is ever compromised, the proper way to revoke the X.509
+certificate is to replace the DANE TLSA record.
