@@ -161,7 +161,7 @@ standardized list of Certificate Authorities, so it is not appropriate for SMTP
 to SMTP communication to use any kind of X.509 validation other than DANE.
 
 For e-mail clients that connect to POP3/IMAP and SMTP servers, I use a X.509
-certificate signed by an intermediary I manage and also use 3 1 1 for the
+certificate signed by an intermediary I manage and also use `3 1 1` for the
 fingerprint context.
 
 Presently e-mail clients do not support DANE validation, so I do import the
@@ -172,5 +172,5 @@ I am anticipating that soon, e-mail clients will DANE validate in order to
 support the new DANE S/MIME and OpenPGP standards.
 
 For S/MIME I put the fingerprint for an intermediary certificate in DNS using
-a `2 1 1` context for the fingerprint. When other e-mail clients supportb DANE,
+a `2 1 1` context for the fingerprint. When other e-mail clients support DANE,
 that will allow them to validate the X.509 certificate sent with my messages.
