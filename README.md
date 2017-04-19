@@ -174,3 +174,26 @@ support the new DANE S/MIME and OpenPGP standards.
 For S/MIME I put the fingerprint for an intermediary certificate in DNS using
 a `2 1 1` context for the fingerprint. When other e-mail clients support DANE,
 that will allow them to validate the X.509 certificate sent with my messages.
+
+* * * * *
+
+This project has several shell scripts intended to run on UNIX variants for
+generating X.509 certificates for use with e-mail systems.
+
+The shell script for the MX server certificate creates a self-signed
+certificate and assumes a directory structure of `/etc/pki/tls/{private,certs}
+for the private key and the public X.509 certificate.
+
+The other scripts will create a Certificate Authority structure within the
+`/srv/rootCA` directory structure and it will be your responsibility to install
+the resulting certificates on the servers where they will be used.
+
+All of this really does depend upon on DANE to be secure and DANE depends upon
+DNSSEC. If you are not implementing DNSSEC for the zone with your mail servers,
+then use traditional commercial Certificate Authorities with the exception of
+your MX server (where you can use self-signed even without DNSSEC/DANE
+suppport because other SMTP servers should not validate due to the flawed
+opportunistic nature of TLS for SMTP to SMTP communicatio over TCP Port 25).
+
+For a secure e-mail system, it needs to be your priority to implement DNSSEC on
+your DNS zone if you do not do so already.
