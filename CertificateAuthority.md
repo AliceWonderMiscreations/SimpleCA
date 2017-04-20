@@ -49,3 +49,42 @@ In the future, hopefully not too distant future, e-mail clients will properly
 support DANE validation and import of a root certificate by a client will no
 longer be necessary, but for now, it is safe and is necessary if you do not
 use a commercial third party Certificate Authority that clients already trust.
+
+### Self-Signed Certificates
+
+In the present, you can also use a self-signed certificate for SMTP/POP/IMAP
+services and ask your users to trust the self-signed certificate.
+
+However it is best practice to change the private key once a year, and that
+would require all your clients manually accept a new self-signed key once a
+year. I believe it is a bad practice to get users use to accepting self-signed
+certificates.
+
+We should wait with using self-signed certificates until clients have the
+ability to validate them with DANE.
+
+S/MIME
+------
+
+The E-Mail protocol was not designed with security in mind. Messages are not
+difficult for a bad actor to either forge or modify in transit.
+
+S/MIME is a mechanism by which a private cryptographic key can either sign an
+e-mail message to give the recipient confidence the message is genuine and has
+not been altered in transit, or encrypt a message so that only the private key
+that belongs to the recipient can decrypt the message.
+
+S/MIME uses X.509 certificates to distribute the public key associated with the
+private key, and the will require a Certificate Authority for validation of the
+X.509 certificate itself.
+
+Okay technically speaking it is *possible* to completely validated an X.509
+certificated used for S/MIME with DANE however there are several severe
+drawbacks:
+
+1. Validating each X.509 via DANE requires at least one DNS record for every
+   user that has a X.509 S/MIME certificate on your system. This is doable if
+   only a few users on your system use S/MIME but it does not scale very well
+   to many users. It becomes a maintenance nightmare for your DNS
+   administration.
+2. It is not uncommon for an end-user device to become compromised.
