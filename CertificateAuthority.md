@@ -87,4 +87,52 @@ drawbacks:
    only a few users on your system use S/MIME but it does not scale very well
    to many users. It becomes a maintenance nightmare for your DNS
    administration.
-2. It is not uncommon for an end-user device to become compromised.
+2. It is not uncommon for an end-user device to become compromised. When this
+   happens and the private key is compromised, a DNS update would be required
+   to invalidate the public X.509 certificate. A solution that requires an
+   update to the DNS zone file every time an end-user device is compromised
+   does not strike me as a very practical solution.
+3. There is a privacy leak. The only way to validate an end-user X.509
+   certificate with DANE requires a DNS record that can be used to verify a
+   username is valid on a system. Spammers and Scammers will take advantage
+   of this when creating lists of users to send their junk mail to.
+
+Those drawbacks make DANE an unsuitable solution for general user X.509
+certificate validation. A better solution exists.
+
+Rather than store the fingerprint of each individual end-user X.509 certificate
+in DNS, the fingerprint of the intermediary used to sign the end user X.509
+certificates should be stored in DNS. This can be done with a DANE `2 0 1` or
+`2 1 1` context record.
+
+The validity of the individual end-user certificate can then be checked by
+making sure it is was signed by the intermediary with a fingerpring that has
+been secured by DANE *and* by checking the OCSP server specified in the X.509
+certificate to make sure it has not been revoked since it was signed.
+
+This method does not require a commercial Certificate Authority, the validity
+of the intermediary certificate is validated by DANE and only needs to be valid
+for the specific e-mail domains it services.
+
+Client Authentication
+---------------------
+
+Normally when an e-mail client connects to an SMTP/POP3/IMAP server, it uses a
+username and password to authenticate.
+
+In some cases that is not considered secure enough, and a client X.509
+certificate is used instead.
+
+At this time, I am not aware of a DANE mechanism by which the servers the
+client is connecting to can authenticate the client certificate, and it does
+not strike me that such a solution would be very practical.
+
+Usually what happens is the e-mail system administrator creates an intermediary
+private key and certificate that is used to sign the client certificates, and
+then the server the client is connecting to makes sure the client is connecting
+using a X.509 certificate signed by that intermediary that has not been
+revoked.
+
+When using this method of client authentication, a commercial Certificate
+Authority should not be used. A private Certificate Authority run by the e-mail
+system administrator really the only option that is secure.
